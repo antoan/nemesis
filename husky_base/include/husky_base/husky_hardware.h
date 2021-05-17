@@ -32,7 +32,7 @@
 #ifndef HUSKY_BASE_HUSKY_HARDWARE_H
 #define HUSKY_BASE_HUSKY_HARDWARE_H
 
-#include "husky_base/husky_diagnostics.h"
+//#include "husky_base/husky_diagnostics.h"
 #include "diagnostic_updater/diagnostic_updater.h"
 #include "hardware_interface/joint_state_interface.h"
 #include "hardware_interface/joint_command_interface.h"
@@ -83,13 +83,13 @@ namespace husky_base
     hardware_interface::VelocityJointInterface velocity_joint_interface_;
 
     // Diagnostics
-    ros::Publisher diagnostic_publisher_;
-    husky_msgs::HuskyStatus husky_status_msg_;
-    diagnostic_updater::Updater diagnostic_updater_;
-    HuskyHardwareDiagnosticTask<clearpath::DataSystemStatus> system_status_task_;
-    HuskyHardwareDiagnosticTask<clearpath::DataPowerSystem> power_status_task_;
-    HuskyHardwareDiagnosticTask<clearpath::DataSafetySystemStatus> safety_status_task_;
-    HuskySoftwareDiagnosticTask software_status_task_;
+    // ros::Publisher diagnostic_publisher_;
+    // husky_msgs::HuskyStatus husky_status_msg_;
+    // diagnostic_updater::Updater diagnostic_updater_;
+    // HuskyHardwareDiagnosticTask<clearpath::DataSystemStatus> system_status_task_;
+    // HuskyHardwareDiagnosticTask<clearpath::DataPowerSystem> power_status_task_;
+    // HuskyHardwareDiagnosticTask<clearpath::DataSafetySystemStatus> safety_status_task_;
+    // HuskySoftwareDiagnosticTask software_status_task_;
 
     // ROS Parameters
     double wheel_diameter_, max_accel_, max_speed_;

@@ -57,10 +57,10 @@ namespace horizon_legacy
 
     typedef boost::shared_ptr<T> Ptr;
     typedef boost::shared_ptr<const T> ConstPtr;
-    BOOST_STATIC_ASSERT_MSG(
-      (boost::is_base_of<clearpath::Message, T>::value),
-      "T must be a descendant of clearpath::Message"
-    );
+    // BOOST_STATIC_ASSERT_MSG(
+    //   (boost::is_base_of<clearpath::Message, T>::value),
+    //   "T must be a descendant of clearpath::Message"
+    // );
 
     static Ptr getLatest(double timeout)
     {
