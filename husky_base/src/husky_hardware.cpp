@@ -184,13 +184,16 @@ void HuskyHardware::updateJointsFromHardware() {
  * to MCU
  */
 void HuskyHardware::writeCommandsToHardware() {
+
   double diff_speed_left = angularToLinear(joints_[LEFT].velocity_command);
   double diff_speed_right = angularToLinear(joints_[RIGHT].velocity_command);
 
-  limitDifferentialSpeed(diff_speed_left, diff_speed_right);
+  // limitDifferentialSpeed(diff_speed_left, diff_speed_right);
 
   // horizon_legacy::controlSpeed(diff_speed_left, diff_speed_right, max_accel_,
   //                              max_accel_);
+
+  // TODO: call SetMotor methods of cython-thunderborg instance here.
 }
 
 /**
@@ -226,7 +229,8 @@ double HuskyHardware::linearToAngular(const double &travel) const {
  * RobotHW provides velocity command in rad/s, Husky needs m/s,
  */
 double HuskyHardware::angularToLinear(const double &angle) const {
-  return angle * wheel_diameter_ / 2;
+  // TODO: Map rads/s to Thunderborg throttle level here
+  return angle;
 }
 
 } // namespace husky_base
