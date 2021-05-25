@@ -5,4 +5,4 @@ CATKIN_IGNORE
 
 *.pyc
 
-.ccls-cache/*
+.ccls-cache

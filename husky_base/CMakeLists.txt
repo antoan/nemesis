@@ -7,26 +7,18 @@ find_package(Boost REQUIRED COMPONENTS chrono)
 
 catkin_package(
   INCLUDE_DIRS include
-#  LIBRARIES horizon_legacy
+  LIBRARIES horizon_legacy
   CATKIN_DEPENDS diagnostic_updater hardware_interface husky_msgs roscpp sensor_msgs
   DEPENDS Boost
 )
 
-include_directories(include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
+include_directories(include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS} /usr/include/python2.7/ /usr/include/arm-linux-gnueabihf/python2.7/)
 
 set_directory_properties(PROPERTIES COMPILE_OPTIONS "-std=c++11;")
 
-# add_library(horizon_legacy
-#   src/horizon_legacy/crc.cpp
-#   src/horizon_legacy/Logger.cpp
-#   src/horizon_legacy/Message.cpp
-#   src/horizon_legacy/Message_data.cpp
-#   src/horizon_legacy/Message_request.cpp
-#   src/horizon_legacy/Message_cmd.cpp
-#   src/horizon_legacy/Transport.cpp
-#   src/horizon_legacy/Number.cpp
-#   src/horizon_legacy/linux_serial.cpp
-# )
+add_library(horizon_legacy
+   src/horizon_legacy/ThunderBorgCythonMock.cpp
+)
 
 add_executable(husky_node
   src/husky_base.cpp
@@ -34,7 +26,7 @@ add_executable(husky_node
 #  src/husky_diagnostics.cpp
   src/horizon_legacy_wrapper.cpp)
 
-target_link_libraries(husky_node ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(husky_node horizon_legacy ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
 # roslint_cpp(
 #   src/husky_base.cpp
