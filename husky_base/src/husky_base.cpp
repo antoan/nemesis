@@ -30,9 +30,9 @@
  */
 
 #include "controller_manager/controller_manager.h"
-#include "husky_base/horizon_legacy/ThunderBorgCythonMock.h"
 #include "husky_base/husky_hardware.h"
 #include "ros/callback_queue.h"
+// #include "thunderborg.h"
 #include <Python.h>
 #include <boost/chrono.hpp>
 #include <ros/console.h>
@@ -99,42 +99,12 @@ int main(int argc, char *argv[]) {
   ros::Timer diagnostic_loop = nh.createTimer(diagnostic_timer);
 
   // Initialize cython-thunderborg
-  Py_SetProgramName(argv[0]); /* optional but recommended */
-  Py_Initialize();
+  // Py_SetProgramName(argv[0]); /* optional but recommended */
+  // Py_Initialize();
 
-  // import_ThunderBorgCythonMock();
-
-  // ThunderBorgCythonMock::ThunderBorg tb;
-
-  // std::string path = "/home/ubuntu/catkin_ws/devel/lib/husky_base/";
-  //   PyObject* pyModuleName = PyUnicode_DecodeFSDefault(path);
-  //  PyObject *pName = PyString_FromString("ThunderBorgCythonMock.pyx");
-  // PySys_SetPath("/home/ubuntu/catkin_ws/devel/lib/husky_base/");
-
-  // PyObject *sys_path = PySys_GetObject("path");
-  // PyList_Append(sys_path, PyString_FromString(
-  //                            "/home/ubuntu/catkin_ws/devel/lib/husky_base/"));
-  // PyObject *pmodule = PyImport_ImportModule("ThunderBorgCythonMock");
-
-  // if (!pmodule) {
-  //   PyErr_Print();
-  //   //     // fprintf(stderr, "Error: could not import module 'embedded'\n");
-  //   //     // ROS_INFO("Embedding Failed");
-  //   ros::shutdown();
-  //   return 1;
-  // }
-
-  //  PyInit_ThunderBorgCythonMock();
-
-  initThunderBorgCythonMock();
-
-  c_ThunderBorg *borg = buildThunderBorg();
-
-  std::cout << SetMotor1Wrapper(borg, 1.0) << std::endl;
-  // c_Thunderborg_t tb;
-  //  ThunderBorg tb;
-  //  c_ThunderBorg tb;
-  //  tb.c_member = 1;
+  // initThunderBorgCythonMock();
+  // c_ThunderBorg *borg = buildThunderBorg();
+  // std::cout << SetMotor1Wrapper(borg, 1.0) << std::endl;
 
   husky_spinner.start();
 
