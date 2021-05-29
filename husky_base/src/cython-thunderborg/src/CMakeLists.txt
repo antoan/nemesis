@@ -9,10 +9,10 @@ cython_add_module(cython_thunderborg ThunderBorgCythonMock.pyx)
 
 #target_link_libraries(cython_catkin_example ${PCL_LIBRARIES})
 
-if(${cython_thunderborg_ROS})
-	set_target_properties(cython_thunderborg PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_PYTHON_DESTINATION})
-	install(TARGETS cython_thunderborg
-	  ARCHIVE DESTINATION ${CATKIN_PACKAGE_PYTHON_DESTINATION}
-	  LIBRARY DESTINATION ${CATKIN_PACKAGE_PYTHON_DESTINATION}
-	)
-endif(${cython_catkin_example_ROS})
+# if(${cython_thunderborg_ROS})
+# 	set_target_properties(cython_thunderborg PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_PYTHON_DESTINATION})
+# 	install(TARGETS cython_thunderborg
+# 	  ARCHIVE DESTINATION ${CATKIN_PACKAGE_PYTHON_DESTINATION}
+# 	  LIBRARY DESTINATION ${CATKIN_PACKAGE_PYTHON_DESTINATION}
+# 	)
+# endif(${cython_thunderborg_ROS})

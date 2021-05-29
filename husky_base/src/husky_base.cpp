@@ -30,9 +30,9 @@
  */
 
 #include "controller_manager/controller_manager.h"
+#include "cython_thunderborg.h"
 #include "husky_base/husky_hardware.h"
 #include "ros/callback_queue.h"
-// #include "thunderborg.h"
 #include <Python.h>
 #include <boost/chrono.hpp>
 #include <ros/console.h>
@@ -99,12 +99,12 @@ int main(int argc, char *argv[]) {
   ros::Timer diagnostic_loop = nh.createTimer(diagnostic_timer);
 
   // Initialize cython-thunderborg
-  // Py_SetProgramName(argv[0]); /* optional but recommended */
-  // Py_Initialize();
+  Py_SetProgramName(argv[0]); /* optional but recommended */
+  Py_Initialize();
 
-  // initThunderBorgCythonMock();
-  // c_ThunderBorg *borg = buildThunderBorg();
-  // std::cout << SetMotor1Wrapper(borg, 1.0) << std::endl;
+  initThunderBorgCythonMock();
+  c_ThunderBorg *borg = buildThunderBorg();
+  std::cout << SetMotor1Wrapper(borg, 1.0) << std::endl;
 
   husky_spinner.start();
 
