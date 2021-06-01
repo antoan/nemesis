@@ -102,9 +102,9 @@ int main(int argc, char *argv[]) {
   Py_SetProgramName(argv[0]); /* optional but recommended */
   Py_Initialize();
 
-  initThunderBorgCythonMock();
-  c_ThunderBorg *borg = buildThunderBorg();
-  std::cout << SetMotor1Wrapper(borg, 1.0) << std::endl;
+  initThunderBorg();
+  // c_ThunderBorg *borg = buildThunderBorg();
+  // std::cout << SetMotor1Wrapper(borg, 1.0) << std::endl;
 
   husky_spinner.start();
 

@@ -1,7 +1,7 @@
 project(cython_thunderborg_src)
 # If the pyx file is a C++ file, we should specify that here.
 set_source_files_properties(
-  ${CMAKE_CURRENT_SOURCE_DIR}/ThunderBorgCythonMock.pyx
+  ${CMAKE_CURRENT_SOURCE_DIR}/ThunderBorg.pyx
   PROPERTIES CYTHON_IS_CXX TRUE )
   
 # add_custom_target(ReplicatePythonSourceTree ALL ${CMAKE_COMMAND} -P
@@ -10,7 +10,7 @@ set_source_files_properties(
 #    WORKING_DIRECTORY ${cython_thunderborg_ROOT})
 
 # Multi-file cython modules do not appear to be working at the moment.
-cython_add_module(cython_thunderborg ThunderBorgCythonMock.pyx)
+cython_add_module(cython_thunderborg ThunderBorg.pyx)
 
  
 
