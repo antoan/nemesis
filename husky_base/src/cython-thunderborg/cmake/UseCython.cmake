@@ -222,9 +222,9 @@ function( compile_pyx _name generated_file )
     )
 
   # Remove their visibility to the user.
-  set( corresponding_pxd_file "" CACHE INTERNAL "" )
-  set( header_location "" CACHE INTERNAL "" )
-  set( pxd_location "" CACHE INTERNAL "" )
+ # set( corresponding_pxd_file "" CACHE INTERNAL "" )
+ # set( header_location "" CACHE INTERNAL "" )
+ # set( pxd_location "" CACHE INTERNAL "" )
 endfunction()
 
 # cython_add_module( <name> src1 src2 ... srcN )
@@ -241,12 +241,17 @@ function( cython_add_module _name )
   endforeach()
   compile_pyx( ${_name} generated_file ${pyx_module_sources} )
   include_directories( ${PYTHON_INCLUDE_DIRS} )
-  python_add_module( ${_name} ${generated_file} ${other_module_sources} )
+  #python_add_module( ${_name} ${generated_file} ${other_module_sources} )
+
+  add_library(${_name} STATIC ${generated_file})
+  target_include_directories(${_name} PUBLIC  ${CMAKE_CURRENT_BINARY_DIR})
+
   if( APPLE )
     set_target_properties( ${_name} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup" )
   else()
     target_link_libraries( ${_name} ${PYTHON_LIBRARIES} )
   endif()
+
 endfunction()
 
 include( CMakeParseArguments )

@@ -49,17 +49,17 @@ add_subdirectory(${cython_thunderborg_ROOT}/src)
 #target_link_libraries(thunderborg ${PYTHON_LIBRARIES})
  
 # # Build nemesis_node
-# add_executable(husky_node
-#    src/husky_base.cpp
-#    src/husky_hardware.cpp
-#  #  src/husky_diagnostics.cpp
-#    src/horizon_legacy_wrapper.cpp
-# # # ${CMAKE_CURRENT_BINARY_DIR}/src/cython-thunderborg/src/cython_thunderborg.cxx
-# # # ${CMAKE_CURRENT_BINARY_DIR}/src/cython-thunderborg/src/cython_thunderborg.h
-# )
+add_executable(husky_node
+   src/husky_base.cpp
+   src/husky_hardware.cpp
+ #  src/husky_diagnostics.cpp
+   src/horizon_legacy_wrapper.cpp
+# # ${CMAKE_CURRENT_BINARY_DIR}/src/cython-thunderborg/src/cython_thunderborg.cxx
+# # ${CMAKE_CURRENT_BINARY_DIR}/src/cython-thunderborg/src/cython_thunderborg.h
+)
 
-# add_definitions(-include Python.h)
-# target_link_libraries(husky_node thunderborg ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+add_definitions(-include Python.h)
+target_link_libraries(husky_node cython_thunderborg ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
 # # target_link_libraries(husky_node ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
