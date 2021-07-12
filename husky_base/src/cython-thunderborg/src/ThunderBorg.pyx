@@ -41,7 +41,7 @@ VOLTAGE_PIN_CORRECTION      = 0.0   # Correction value for the analog voltage mo
 BATTERY_MIN_DEFAULT         = 7.0   # Default minimum battery monitoring voltage
 BATTERY_MAX_DEFAULT         = 35.0  # Default maximum battery monitoring voltage
 
-I2C_ID_THUNDERBORG          = 0x15
+cpdef public object I2C_ID_THUNDERBORG          = 0x15
 
 COMMAND_SET_LED1            = 1     # Set the colour of the ThunderBorg LED
 COMMAND_GET_LED1            = 2     # Get the colour of the ThunderBorg LED
@@ -78,6 +78,21 @@ COMMAND_VALUE_OFF           = 0     # I2C value representing off
 
 COMMAND_ANALOG_MAX          = 0x3FF # Maximum value for analog readings
 
+cdef public void TestFunction():
+     tb = ThunderBorg()
+     tb.Init()
+     while True:
+        tb.SetMotor1(0.5)
+
+
+cdef public ThunderBorg buildThunderBorg():
+    return ThunderBorg()
+
+cdef public InitTB(ThunderBorg borg):
+    borg.Init()
+
+cdef public SetMotor1Wrapper(ThunderBorg borg, double power):
+    borg.SetMotor1(power)
 
 def ScanForThunderBorg(busNumber = 1):
     """
@@ -197,12 +212,21 @@ printFunction           Function reference to call when printing text, if None "
     """
 
     # Shared values used by this class
-    busNumber               = 1                     # Check here for Rev 1 vs Rev 2 and select the correct bus
-    i2cAddress              = I2C_ID_THUNDERBORG    # I²C address, override for a different address
-    foundChip               = False
-    printFunction           = None
-    i2cWrite                = None
-    i2cRead                 = None
+
+    cdef public object busNumber
+    cdef public object i2cAddress
+    cdef public object foundChip
+    cdef public object printFunction
+    cdef public object i2cWrite
+    cdef public object i2cRead
+
+    def __init__(self):
+        self.busNumber               = 1                     # Check here for Rev 1 vs Rev 2 and select the correct bus
+        self.i2cAddress              = I2C_ID_THUNDERBORG    # I²C address, override for a different address
+        self.foundChip               = False
+        self.printFunction           = None
+        self.i2cWrite                = None
+        self.i2cRead                 = None
 
 
     def RawWrite(self, command, data):
@@ -286,7 +310,7 @@ TB.printFunction = TB.NoPrint
         pass
 
 
-    def Init(self, tryOtherBus = False):
+    cdef public void Init(self):
         """
 Init([tryOtherBus])
 
@@ -295,7 +319,8 @@ Prepare the I2C driver for talking to the ThunderBorg
 If tryOtherBus is True, this function will attempt to use the other bus if the ThunderBorg devices can not be found on the current busNumber
     This is only really useful for early Raspberry Pi models!
         """
-        self.Print('Loading ThunderBorg on bus %d, address %02X' % (self.busNumber, self.i2cAddress))
+        
+       # self.Print('Loading ThunderBorg on bus %d, address %02X' % (self.busNumber, self.i2cAddress))
 
         # Open the bus
         self.i2cRead = io.open("/dev/i2c-" + str(self.busNumber), "rb", buffering = 0)
@@ -325,16 +350,16 @@ If tryOtherBus is True, this function will attempt to use the other bus if the T
         # See if we are missing chips
         if not self.foundChip:
             self.Print('ThunderBorg was not found')
-            if tryOtherBus:
-                if self.busNumber == 1:
-                    self.busNumber = 0
-                else:
-                    self.busNumber = 1
-                self.Print('Trying bus %d instead' % (self.busNumber))
-                self.Init(False)
-            else:
-                self.Print('Are you sure your ThunderBorg is properly attached, the correct address is used, and the I2C drivers are running?')
-                self.bus = None
+            # if tryOtherBus:
+            #     if self.busNumber == 1:
+            #         self.busNumber = 0
+            #     else:
+            #         self.busNumber = 1
+            #     self.Print('Trying bus %d instead' % (self.busNumber))
+            #     self.Init(False)
+            # else:
+            #     self.Print('Are you sure your ThunderBorg is properly attached, the correct address is used, and the I2C drivers are running?')
+            #     self.bus = None
         else:
             self.Print('ThunderBorg loaded on bus %d' % (self.busNumber))
 
