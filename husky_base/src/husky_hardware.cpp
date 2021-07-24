@@ -57,6 +57,42 @@ HuskyHardware::HuskyHardware(ros::NodeHandle nh, ros::NodeHandle private_nh,
   std::string port;
   private_nh_.param<std::string>("port", port, "/dev/prolific");
 
+  // Initialize cython-thunderborg
+
+  // Py_SetProgramName(argv[0]); /* optional but recommended */
+
+  auto err = PyImport_AppendInittab("ThunderBorg", initThunderBorg);
+
+  // TODO: Handle Error more appropriately
+  if (err) {
+    exit(1);
+  }
+
+  Py_Initialize();
+
+  std::string strModule = "ThunderBorg"; // module to be loaded
+  pName = PyString_FromString(strModule.c_str());
+
+  pModule = PyImport_Import(pName);
+
+  // TODO: Handle Error more appropriately
+  if (pModule == NULL)
+    exit(1);
+
+  if (borg == NULL)
+    // ROS_ERROR("borg is null");
+    exit(1);
+
+  InitTB();
+  // InitTB(borg);
+
+  //  SetMotor1Wrapper(0.5);
+  // ROS_ERROR("Setting Motor 1 to 0.5");
+  // SetMotor1Wrapper(borg, 0.5);
+  // ros::Duration(3.0).sleep();
+  // SetMotor1Wrapper(borg, 0.0);
+  // PyErr_Print();
+
   // horizon_legacy::connect(port);
   // horizon_legacy::configureLimits(max_speed_, max_accel_);
   // resetTravelOffset();
@@ -185,8 +221,8 @@ void HuskyHardware::updateJointsFromHardware() {
  */
 void HuskyHardware::writeCommandsToHardware() {
 
-  double diff_speed_left = angularToLinear(joints_[LEFT].velocity_command);
-  double diff_speed_right = angularToLinear(joints_[RIGHT].velocity_command);
+  // double diff_speed_left = angularToLinear(joints_[LEFT].velocity_command);
+  // double diff_speed_right = angularToLinear(joints_[RIGHT].velocity_command);
 
   // limitDifferentialSpeed(diff_speed_left, diff_speed_right);
 
@@ -194,6 +230,14 @@ void HuskyHardware::writeCommandsToHardware() {
   //                              max_accel_);
 
   // TODO: call SetMotor methods of cython-thunderborg instance here.
+
+  // ROS_ERROR("Setting Motor 1 to 0.5");
+  if (borg == NULL)
+    ROS_ERROR("borg is null");
+  // borg->SetMotor1(0.5);
+  // SetMotor1Wrapper(borg, 0.5);
+  SetMotor1Wrapper(0.5);
+  SetMotor2Wrapper(0.5);
 }
 
 /**
@@ -231,6 +275,22 @@ double HuskyHardware::linearToAngular(const double &travel) const {
 double HuskyHardware::angularToLinear(const double &angle) const {
   // TODO: Map rads/s to Thunderborg throttle level here
   return angle;
+}
+
+HuskyHardware::~HuskyHardware() {
+
+  /* Clean up after using CPython. */
+  // PyMem_RawFree(argv[0]);
+  // Py_DECREF(args);
+
+  SetMotor1Wrapper(0.0);
+  SetMotor2Wrapper(0.0);
+
+  // SetMotor1Wrapper(borg, 0.0);
+
+  Py_DECREF(pModule);
+  Py_DECREF(pName);
+  Py_Finalize();
 }
 
 } // namespace husky_base

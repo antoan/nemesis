@@ -78,21 +78,44 @@ COMMAND_VALUE_OFF           = 0     # I2C value representing off
 
 COMMAND_ANALOG_MAX          = 0x3FF # Maximum value for analog readings
 
-cdef public void TestFunction():
-     tb = ThunderBorg()
-     tb.Init()
-     while True:
-        tb.SetMotor1(0.5)
+#####################################ROS TUNDERBORG INTERFACE #################
+
+# Thunderborg Instance
+cdef public ThunderBorg borg = ThunderBorg()
+
+# cdef public void TestFunction():
+#      tb = ThunderBorg()
+#      tb.Init()
+#      while True:
+#         tb.SetMotor1(0.5)
 
 
-cdef public ThunderBorg buildThunderBorg():
-    return ThunderBorg()
+# cdef public ThunderBorg buildThunderBorg():
+#     return ThunderBorg()
 
-cdef public InitTB(ThunderBorg borg):
+# cdef public InitTB(ThunderBorg borg):
+#      borg.Init()
+
+# cdef public SetMotor1Wrapper(ThunderBorg borg, double power):
+#      borg.SetMotor1(power)
+
+# The cython compiler generates a C++ header file  which exposes the Thunderborg class as a c_Thunderborg_t*, the class methods,
+# however are not directly accessible for reasons which remain unclear. Refer to the following discussion:
+# https://stackoverflow.com/questions/36455381/embedding-cython-class-methods-in-c?rq=1
+# Functions get exposed, while class methods are problematic for us.
+# As a workaround, we make use of the wrapper functions below which call the required methods on the Thunderborg instance we create above.
+# (Antoan Bekele)
+
+cdef public InitTB():
     borg.Init()
 
-cdef public SetMotor1Wrapper(ThunderBorg borg, double power):
+cdef public SetMotor1Wrapper(double power):
     borg.SetMotor1(power)
+
+cdef public SetMotor2Wrapper(double power):
+    borg.SetMotor2(power)
+
+############################################################################
 
 def ScanForThunderBorg(busNumber = 1):
     """
