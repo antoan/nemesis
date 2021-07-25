@@ -42,7 +42,7 @@ VOLTAGE_PIN_CORRECTION      = 0.0   # Correction value for the analog voltage mo
 BATTERY_MIN_DEFAULT         = 7.0   # Default minimum battery monitoring voltage
 BATTERY_MAX_DEFAULT         = 35.0  # Default maximum battery monitoring voltage
 
-cpdef public object I2C_ID_THUNDERBORG          = 0x15
+I2C_ID_THUNDERBORG          = 0x15
 
 COMMAND_SET_LED1            = 1     # Set the colour of the ThunderBorg LED
 COMMAND_GET_LED1            = 2     # Get the colour of the ThunderBorg LED
@@ -82,7 +82,7 @@ COMMAND_ANALOG_MAX          = 0x3FF # Maximum value for analog readings
 #####################################ROS TUNDERBORG INTERFACE #################
 
 # Thunderborg Instance
-cdef public ThunderBorg borg = ThunderBorg()
+cdef ThunderBorg borg = ThunderBorg()
 
 # cdef public void TestFunction():
 #      tb = ThunderBorg()
@@ -239,12 +239,12 @@ printFunction           Function reference to call when printing text, if None "
 
     # Shared values used by this class
 
-    cdef public object busNumber
-    cdef public object i2cAddress
-    cdef public object foundChip
-    cdef public object printFunction
-    cdef public object i2cWrite
-    cdef public object i2cRead
+    cdef object busNumber
+    cdef object i2cAddress
+    cdef bool   foundChip
+    cdef object printFunction
+    cdef object i2cWrite
+    cdef object i2cRead
 
     def __init__(self):
         self.busNumber               = 1                     # Check here for Rev 1 vs Rev 2 and select the correct bus

@@ -110,11 +110,6 @@ void HuskyHardware::initilizeCythonThunderborg() {
     return;
   }
 
-  // TODO remove this , handle in cython-tb
-  if (borg == NULL)
-    // ROS_ERROR("borg is null");
-    exit(1);
-
   if (!InitTB())
     ROS_ERROR("Cython-Thunderborg Initialization Failure");
 }
@@ -230,9 +225,9 @@ void HuskyHardware::writeCommandsToHardware() {
   // horizon_legacy::controlSpeed(diff_speed_left, diff_speed_right, max_accel_,
   //                              max_accel_);
 
-  if (!SetMotor1Wrapper(0.5))
+  if (!SetMotor1Wrapper(-0.5))
     ROS_ERROR("Error sending speed command: Motor 1");
-  if (!SetMotor2Wrapper(0.5))
+  if (!SetMotor2Wrapper(-0.5))
     ROS_ERROR("Error sending speed command: Motor 2");
 }
 
