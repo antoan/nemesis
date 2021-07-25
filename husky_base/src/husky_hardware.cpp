@@ -54,45 +54,10 @@ HuskyHardware::HuskyHardware(ros::NodeHandle nh, ros::NodeHandle private_nh,
   private_nh_.param<double>("max_speed", max_speed_, 1.0);
   private_nh_.param<double>("polling_timeout_", polling_timeout_, 10.0);
 
-  std::string port;
-  private_nh_.param<std::string>("port", port, "/dev/prolific");
+  initilizeCythonThunderborg();
 
-  // Initialize cython-thunderborg
-
-  // Py_SetProgramName(argv[0]); /* optional but recommended */
-
-  auto err = PyImport_AppendInittab("ThunderBorg", initThunderBorg);
-
-  // TODO: Handle Error more appropriately
-  if (err) {
-    exit(1);
-  }
-
-  Py_Initialize();
-
-  std::string strModule = "ThunderBorg"; // module to be loaded
-  pName = PyString_FromString(strModule.c_str());
-
-  pModule = PyImport_Import(pName);
-
-  // TODO: Handle Error more appropriately
-  if (pModule == NULL)
-    exit(1);
-
-  if (borg == NULL)
-    // ROS_ERROR("borg is null");
-    exit(1);
-
-  InitTB();
-  // InitTB(borg);
-
-  //  SetMotor1Wrapper(0.5);
-  // ROS_ERROR("Setting Motor 1 to 0.5");
-  // SetMotor1Wrapper(borg, 0.5);
-  // ros::Duration(3.0).sleep();
-  // SetMotor1Wrapper(borg, 0.0);
-  // PyErr_Print();
-
+  // std::string port;
+  // private_nh_.param<std::string>("port", port, "/dev/prolific");
   // horizon_legacy::connect(port);
   // horizon_legacy::configureLimits(max_speed_, max_accel_);
   // resetTravelOffset();
@@ -104,19 +69,55 @@ HuskyHardware::HuskyHardware(ros::NodeHandle nh, ros::NodeHandle private_nh,
  * Get current encoder travel offsets from MCU and bias future encoder readings
  * against them
  */
-void HuskyHardware::resetTravelOffset() {
-  // horizon_legacy::Channel<clearpath::DataEncoders>::Ptr enc =
-  //     horizon_legacy::Channel<clearpath::DataEncoders>::requestData(
-  //         polling_timeout_);
-  // if (enc) {
-  //   for (int i = 0; i < 4; i++) {
-  //     joints_[i].position_offset = linearToAngular(enc->getTravel(i % 2));
-  //   }
-  // } else {
-  //   ROS_ERROR("Could not get encoder data to calibrate travel offset");
-  // }
-}
+// void HuskyHardware::resetTravelOffset() {
+//   horizon_legacy::Channel<clearpath::DataEncoders>::Ptr enc =
+//       horizon_legacy::Channel<clearpath::DataEncoders>::requestData(
+//           polling_timeout_);
+//   if (enc) {
+//     for (int i = 0; i < 4; i++) {
+//       joints_[i].position_offset = linearToAngular(enc->getTravel(i % 2));
+//     }
+//   } else {
+//     ROS_ERROR("Could not get encoder data to calibrate travel offset");
+//   }
+// }
 
+/**
+ * Initialize Cython-Thunderborg driver.
+ */
+void HuskyHardware::initilizeCythonThunderborg() {
+
+  // Initialize cython-thunderborg
+
+  // Py_SetProgramName(argv[0]); /* optional but recommended */
+
+  auto err = PyImport_AppendInittab("ThunderBorg", initThunderBorg);
+
+  if (err) {
+    ROS_ERROR("Cython-Thunderborg PyImport_AppendInittab Failed.");
+    return;
+  }
+
+  Py_Initialize();
+
+  std::string strModule = "ThunderBorg"; // module to be loaded
+  pName = PyString_FromString(strModule.c_str());
+
+  pModule = PyImport_Import(pName);
+
+  if (pModule == NULL) {
+    ROS_ERROR("Cython-Thunderborg module failed to load.");
+    return;
+  }
+
+  // TODO remove this , handle in cython-tb
+  if (borg == NULL)
+    // ROS_ERROR("borg is null");
+    exit(1);
+
+  if (!InitTB())
+    ROS_ERROR("Cython-Thunderborg Initialization Failure");
+}
 /**
  * Register diagnostic tasks with updater class
  */
@@ -229,15 +230,10 @@ void HuskyHardware::writeCommandsToHardware() {
   // horizon_legacy::controlSpeed(diff_speed_left, diff_speed_right, max_accel_,
   //                              max_accel_);
 
-  // TODO: call SetMotor methods of cython-thunderborg instance here.
-
-  // ROS_ERROR("Setting Motor 1 to 0.5");
-  if (borg == NULL)
-    ROS_ERROR("borg is null");
-  // borg->SetMotor1(0.5);
-  // SetMotor1Wrapper(borg, 0.5);
-  SetMotor1Wrapper(0.5);
-  SetMotor2Wrapper(0.5);
+  if (!SetMotor1Wrapper(0.5))
+    ROS_ERROR("Error sending speed command: Motor 1");
+  if (!SetMotor2Wrapper(0.5))
+    ROS_ERROR("Error sending speed command: Motor 2");
 }
 
 /**

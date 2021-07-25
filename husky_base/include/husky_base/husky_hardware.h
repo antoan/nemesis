@@ -65,7 +65,10 @@ public:
 
   virtual ~HuskyHardware() override;
 
-private:
+  private:
+
+  void initilizeCythonThunderborg();
+    
   void initializeDiagnostics();
 
   void resetTravelOffset();

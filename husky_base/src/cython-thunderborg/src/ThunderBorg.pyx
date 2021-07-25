@@ -31,6 +31,7 @@ import io
 import fcntl
 import types
 import time
+from libcpp cimport bool
 
 # Constant values
 I2C_SLAVE                   = 0x0703
@@ -106,14 +107,16 @@ cdef public ThunderBorg borg = ThunderBorg()
 # As a workaround, we make use of the wrapper functions below which call the required methods on the Thunderborg instance we create above.
 # (Antoan Bekele)
 
-cdef public InitTB():
-    borg.Init()
+cdef public bool InitTB():
+    return borg.Init()
 
-cdef public SetMotor1Wrapper(double power):
-    borg.SetMotor1(power)
 
-cdef public SetMotor2Wrapper(double power):
-    borg.SetMotor2(power)
+cdef public bool SetMotor1Wrapper(double power):
+    return borg.SetMotor1(power)
+
+
+cdef public bool SetMotor2Wrapper(double power):
+    return borg.SetMotor2(power)
 
 ############################################################################
 
@@ -333,7 +336,7 @@ TB.printFunction = TB.NoPrint
         pass
 
 
-    cdef public void Init(self):
+    cdef public bool Init(self):
         """
 Init([tryOtherBus])
 
@@ -386,8 +389,9 @@ If tryOtherBus is True, this function will attempt to use the other bus if the T
         else:
             self.Print('ThunderBorg loaded on bus %d' % (self.busNumber))
 
+        return self.foundChip
 
-    def SetMotor2(self, power):
+    cdef public bool SetMotor2(self, power):
         """
 SetMotor2(power)
 
@@ -417,7 +421,9 @@ SetMotor2(1)     -> motor 2 moving forward at 100% power
             raise
         except:
             self.Print('Failed sending motor 2 drive level!')
+            return False
 
+        return True
 
     def GetMotor2(self):
         """
@@ -448,7 +454,7 @@ e.g.
             return
 
 
-    def SetMotor1(self, power):
+    cdef public bool SetMotor1(self, power):
         """
 SetMotor1(power)
 
@@ -478,7 +484,9 @@ SetMotor1(1)     -> motor 1 moving forward at 100% power
             raise
         except:
             self.Print('Failed sending motor 1 drive level!')
+            return False
 
+        return True
 
     def GetMotor1(self):
         """
