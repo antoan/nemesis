@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # coding: latin-1
+
+# This module is a cython port of the original ThunderBorg module for the purpose of reducing overhead in the ROS control loop. (Antoan Bekele)
+
 """
 This module is designed to communicate with the ThunderBorg
 
@@ -101,22 +104,36 @@ cdef ThunderBorg borg = ThunderBorg()
 #      borg.SetMotor1(power)
 
 # The cython compiler generates a C++ header file  which exposes the Thunderborg class as a c_Thunderborg_t*, the class methods,
-# however are not directly accessible for reasons which remain unclear. Refer to the following discussion:
+# however are not directly accessible for reasons which remain unclear. The cython docs do not provide sufficient examples on how to achieve this as of time of writing
+# Please refer to the following discussion:
 # https://stackoverflow.com/questions/36455381/embedding-cython-class-methods-in-c?rq=1
-# Functions get exposed, while class methods are problematic for us.
-# As a workaround, we make use of the wrapper functions below which call the required methods on the Thunderborg instance we create above.
+# In summary, global functions get exposed and are accesible from C++, while class methods are problematic for the moment.
+# As a workaround, we make use of the wrapper functions below which call the required methods on the Thunderborg instance.
+
+# NOTE: Ideally we ought to use rospy in cython-thunderborg to propagate messages/exceptions to ROS RobotHW and handle things there accordingly.
+# eg write to DEBUG/ERROR or terminate execution.
+# We added sucess return values to Motor Setter Methods which we check in RobotHW. Getter Methods raise IOError,
+# while these will not be visible to RobotHW or rqt console, they will be printed to the terminal.
+
 # (Antoan Bekele)
 
 cdef public bool InitTB():
     return borg.Init()
 
-
 cdef public bool SetMotor1Wrapper(double power):
     return borg.SetMotor1(power)
 
-
 cdef public bool SetMotor2Wrapper(double power):
     return borg.SetMotor2(power)
+
+cdef public float GetMotor1Wrapper():
+     return borg.GetMotor1()
+
+cdef public float GetMotor2Wrapper():
+     return borg.GetMotor2()
+
+cdef public float GetBatteryReadingWrapper():
+     return borg.GetBatteryReading()
 
 ############################################################################
 
@@ -425,7 +442,7 @@ SetMotor2(1)     -> motor 2 moving forward at 100% power
 
         return True
 
-    def GetMotor2(self):
+    cdef public float GetMotor2(self):
         """
 power = GetMotor2()
 
@@ -441,8 +458,8 @@ e.g.
         except KeyboardInterrupt:
             raise
         except:
-            self.Print('Failed reading motor 2 drive level!')
-            return
+            #self.Print('Failed reading motor 2 drive level!')
+            raise IOError('Failed reading motor 2 drive level!')
 
         power = float(i2cRecv[2]) / float(PWM_MAX)
 
@@ -451,8 +468,13 @@ e.g.
         elif i2cRecv[1] == COMMAND_VALUE_REV:
             return -power
         else:
-            return
+            raise IOError('Invalid reading recieved for motor 2 drive level!')
 
+        # (AB)
+        # if i2cRecv[1] == COMMAND_VALUE_REV:
+        #     return -power
+
+        # return power
 
     cdef public bool SetMotor1(self, power):
         """
@@ -488,7 +510,7 @@ SetMotor1(1)     -> motor 1 moving forward at 100% power
 
         return True
 
-    def GetMotor1(self):
+    cdef public float GetMotor1(self):
         """
 power = GetMotor1()
 
@@ -504,8 +526,8 @@ e.g.
         except KeyboardInterrupt:
             raise
         except:
-            self.Print('Failed reading motor 1 drive level!')
-            return
+            # self.Print('Failed reading motor 1 drive level!')
+            raise IOError('Failed reading motor 1 drive level!')
 
         power = float(i2cRecv[2]) / float(PWM_MAX)
 
@@ -514,7 +536,7 @@ e.g.
         elif i2cRecv[1] == COMMAND_VALUE_REV:
             return -power
         else:
-            return
+            raise IOError('Invalid reading recieved for motor 1 drive level!')
 
 
     def SetMotors(self, power):
@@ -834,7 +856,7 @@ For more details check the website at www.piborg.org/thunderborg and double chec
             return True
 
 
-    def GetBatteryReading(self):
+    cdef public float GetBatteryReading(self):
         """
 voltage = GetBatteryReading()
 
@@ -846,8 +868,8 @@ Returns the value as a voltage based on the 3.3 V rail as a reference.
         except KeyboardInterrupt:
             raise
         except:
-            self.Print('Failed reading battery level!')
-            return
+            #self.Print('Failed reading battery level!')
+            raise IOError('Failed reading battery level!')
 
         raw = (i2cRecv[1] << 8) + i2cRecv[2]
         level = float(raw) / float(COMMAND_ANALOG_MAX)

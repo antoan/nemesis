@@ -209,6 +209,12 @@ void HuskyHardware::updateJointsFromHardware() {
   //     }
   //   }
   // }
+
+  // TODO: Stub - convert from throttle level to rads/s, cast to double and
+  // write to joints_
+  float power2 = GetMotor2Wrapper();
+  float power1 = GetMotor1Wrapper();
+  // ROS_DEBUG_STREAM("Power 1:" << power1 << " Power 2:" << power2);
 }
 
 /**
@@ -225,6 +231,7 @@ void HuskyHardware::writeCommandsToHardware() {
   // horizon_legacy::controlSpeed(diff_speed_left, diff_speed_right, max_accel_,
   //                              max_accel_);
 
+  // TODO: Stub - read from joints_ and convert from rads/s to throttle
   if (!SetMotor1Wrapper(-0.5))
     ROS_ERROR("Error sending speed command: Motor 1");
   if (!SetMotor2Wrapper(-0.5))
