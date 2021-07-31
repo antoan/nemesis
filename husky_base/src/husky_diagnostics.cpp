@@ -32,26 +32,27 @@
 #include "husky_base/husky_diagnostics.h"
 
 namespace {
-const int UNDERVOLT_ERROR = 18;
-const int UNDERVOLT_WARN = 19;
-const int OVERVOLT_ERROR = 30;
-const int OVERVOLT_WARN = 29;
-const int DRIVER_OVERTEMP_ERROR = 50;
-const int DRIVER_OVERTEMP_WARN = 30;
-const int MOTOR_OVERTEMP_ERROR = 80;
-const int MOTOR_OVERTEMP_WARN = 70;
-const double LOWPOWER_ERROR = 0.2;
-const double LOWPOWER_WARN = 0.3;
+const float UNDERVOLT_ERROR = 7.0;
+const float UNDERVOLT_WARN = 10.0;
+// const int OVERVOLT_ERROR = 30;
+// const int OVERVOLT_WARN = 29;
+// const int DRIVER_OVERTEMP_ERROR = 50;
+// const int DRIVER_OVERTEMP_WARN = 30;
+// const int MOTOR_OVERTEMP_ERROR = 80;
+// const int MOTOR_OVERTEMP_WARN = 70;
+// const double LOWPOWER_ERROR = 0.2;
+// const double LOWPOWER_WARN = 0.3;
+
 const int CONTROLFREQ_WARN = 90;
-const unsigned int SAFETY_TIMEOUT = 0x1;
-const unsigned int SAFETY_LOCKOUT = 0x2;
-const unsigned int SAFETY_ESTOP = 0x8;
-const unsigned int SAFETY_CCI = 0x10;
-const unsigned int SAFETY_PSU = 0x20;
-const unsigned int SAFETY_CURRENT = 0x40;
-const unsigned int SAFETY_WARN = (SAFETY_TIMEOUT | SAFETY_CCI | SAFETY_PSU);
-const unsigned int SAFETY_ERROR =
-    (SAFETY_LOCKOUT | SAFETY_ESTOP | SAFETY_CURRENT);
+// const unsigned int SAFETY_TIMEOUT = 0x1;
+// const unsigned int SAFETY_LOCKOUT = 0x2;
+// const unsigned int SAFETY_ESTOP = 0x8;
+// const unsigned int SAFETY_CCI = 0x10;
+// const unsigned int SAFETY_PSU = 0x20;
+// const unsigned int SAFETY_CURRENT = 0x40;
+// const unsigned int SAFETY_WARN = (SAFETY_TIMEOUT | SAFETY_CCI | SAFETY_PSU);
+// const unsigned int SAFETY_ERROR =
+//     (SAFETY_LOCKOUT | SAFETY_ESTOP | SAFETY_CURRENT);
 } // namespace
 
 namespace husky_base {
@@ -266,4 +267,31 @@ void HuskySoftwareDiagnosticTask::reset() {
   control_freq_ = std::numeric_limits<double>::infinity();
   target_control_freq_ = 0;
 }
+
+HuskyBatteryDiagnosticTask::HuskyBatteryDiagnosticTask(
+    husky_msgs::HuskyStatus &msg)
+    : DiagnosticTask("battery_status"), msg_(msg) {}
+
+void HuskyBatteryDiagnosticTask::updateBatteryStatus(float voltage) {
+  // Keep minimum observed frequency for diagnostics purposes
+  battery_voltage_ = voltage;
+}
+
+void HuskyBatteryDiagnosticTask::run(
+    diagnostic_updater::DiagnosticStatusWrapper &stat) {
+
+  msg_.battery_voltage = battery_voltage_;
+
+  stat.add("Thunderborg Battery Voltage", msg_.battery_voltage);
+
+  // double margin = control_freq_ / target_control_freq_ * 100;
+
+  stat.summary(diagnostic_msgs::DiagnosticStatus::OK, "Battery Voltage OK");
+  if (battery_voltage_ < UNDERVOLT_WARN) {
+    std::ostringstream message;
+    message << "Low Battery";
+    stat.mergeSummary(diagnostic_msgs::DiagnosticStatus::WARN, message.str());
+  }
+}
+
 } // namespace husky_base

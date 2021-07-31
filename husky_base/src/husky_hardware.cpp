@@ -44,7 +44,8 @@ namespace husky_base {
 HuskyHardware::HuskyHardware(ros::NodeHandle nh, ros::NodeHandle private_nh,
                              double target_control_freq)
     : nh_(nh), private_nh_(private_nh),
-      software_status_task_(husky_status_msg_, target_control_freq)
+      software_status_task_(husky_status_msg_, target_control_freq),
+      battery_status_task_(husky_status_msg_)
 // system_status_task_(husky_status_msg_)
 // power_status_task_(husky_status_msg_),
 // safety_status_task_(husky_status_msg_),
@@ -134,6 +135,7 @@ void HuskyHardware::initializeDiagnostics() {
 
   diagnostic_updater_.setHardwareID("Nemesis_Hardware_ID");
   diagnostic_updater_.add(software_status_task_);
+  diagnostic_updater_.add(battery_status_task_);
   diagnostic_publisher_ = nh_.advertise<husky_msgs::HuskyStatus>("status", 10);
 }
 
@@ -162,6 +164,7 @@ void HuskyHardware::registerControlInterfaces() {
  * External hook to trigger diagnostic update
  */
 void HuskyHardware::updateDiagnostics() {
+  battery_status_task_.updateBatteryStatus(GetBatteryReadingWrapper());
   diagnostic_updater_.force_update();
   husky_status_msg_.header.stamp = ros::Time::now();
   diagnostic_publisher_.publish(husky_status_msg_);

@@ -40,6 +40,7 @@
 namespace husky_base {
 
 class HuskySoftwareDiagnosticTask : public diagnostic_updater::DiagnosticTask {
+
 public:
   explicit HuskySoftwareDiagnosticTask(husky_msgs::HuskyStatus &msg,
                                        double target_control_freq);
@@ -52,6 +53,21 @@ private:
   void reset();
 
   double control_freq_, target_control_freq_;
+  husky_msgs::HuskyStatus &msg_;
+};
+
+class HuskyBatteryDiagnosticTask : public diagnostic_updater::DiagnosticTask {
+
+public:
+  explicit HuskyBatteryDiagnosticTask(husky_msgs::HuskyStatus &msg);
+
+  void run(diagnostic_updater::DiagnosticStatusWrapper &stat);
+
+  void updateBatteryStatus(float voltage);
+
+private:
+  float battery_voltage_;
+
   husky_msgs::HuskyStatus &msg_;
 };
 

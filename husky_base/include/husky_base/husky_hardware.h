@@ -96,6 +96,7 @@ private:
   husky_msgs::HuskyStatus husky_status_msg_;
   diagnostic_updater::Updater diagnostic_updater_;
   HuskySoftwareDiagnosticTask software_status_task_;
+  HuskyBatteryDiagnosticTask battery_status_task_;
 
   // HuskyHardwareDiagnosticTask<clearpath::DataSystemStatus>
   // system_status_task_;
