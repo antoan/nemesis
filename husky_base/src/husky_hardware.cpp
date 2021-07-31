@@ -43,12 +43,13 @@ namespace husky_base {
  */
 HuskyHardware::HuskyHardware(ros::NodeHandle nh, ros::NodeHandle private_nh,
                              double target_control_freq)
-    : nh_(nh), private_nh_(private_nh)
-// system_status_task_(husky_status_msg_),
+    : nh_(nh), private_nh_(private_nh),
+      software_status_task_(husky_status_msg_, target_control_freq)
+// system_status_task_(husky_status_msg_)
 // power_status_task_(husky_status_msg_),
 // safety_status_task_(husky_status_msg_),
-// software_status_task_(husky_status_msg_, target_control_freq)
 {
+
   private_nh_.param<double>("wheel_diameter", wheel_diameter_, 0.3302);
   private_nh_.param<double>("max_accel", max_accel_, 5.0);
   private_nh_.param<double>("max_speed", max_speed_, 1.0);
@@ -61,13 +62,13 @@ HuskyHardware::HuskyHardware(ros::NodeHandle nh, ros::NodeHandle private_nh,
   // horizon_legacy::connect(port);
   // horizon_legacy::configureLimits(max_speed_, max_accel_);
   // resetTravelOffset();
-  // initializeDiagnostics();
+  initializeDiagnostics();
   registerControlInterfaces();
 }
 
 /**
- * Get current encoder travel offsets from MCU and bias future encoder readings
- * against them
+ * Get current encoder travel offsets from MCU and bias future encoder
+ * readings against them
  */
 // void HuskyHardware::resetTravelOffset() {
 //   horizon_legacy::Channel<clearpath::DataEncoders>::Ptr enc =
@@ -117,9 +118,11 @@ void HuskyHardware::initilizeCythonThunderborg() {
  * Register diagnostic tasks with updater class
  */
 void HuskyHardware::initializeDiagnostics() {
+
   // horizon_legacy::Channel<clearpath::DataPlatformInfo>::Ptr info =
   //     horizon_legacy::Channel<clearpath::DataPlatformInfo>::requestData(
   //         polling_timeout_);
+  //
   // std::ostringstream hardware_id_stream;
   // hardware_id_stream << "Husky " << info->getModel() << "-"
   //                    << info->getSerial();
@@ -128,14 +131,15 @@ void HuskyHardware::initializeDiagnostics() {
   // diagnostic_updater_.add(system_status_task_);
   // diagnostic_updater_.add(power_status_task_);
   // diagnostic_updater_.add(safety_status_task_);
-  // diagnostic_updater_.add(software_status_task_);
-  // diagnostic_publisher_ = nh_.advertise<husky_msgs::HuskyStatus>("status",
-  // 10);
+
+  diagnostic_updater_.setHardwareID("Nemesis_Hardware_ID");
+  diagnostic_updater_.add(software_status_task_);
+  diagnostic_publisher_ = nh_.advertise<husky_msgs::HuskyStatus>("status", 10);
 }
 
 /**
- * Register interfaces with the RobotHW interface manager, allowing ros_control
- * operation
+ * Register interfaces with the RobotHW interface manager, allowing
+ * ros_control operation
  */
 void HuskyHardware::registerControlInterfaces() {
   ros::V_string joint_names = boost::assign::list_of("front_left_wheel")(
@@ -158,9 +162,9 @@ void HuskyHardware::registerControlInterfaces() {
  * External hook to trigger diagnostic update
  */
 void HuskyHardware::updateDiagnostics() {
-  // diagnostic_updater_.force_update();
-  // husky_status_msg_.header.stamp = ros::Time::now();
-  // diagnostic_publisher_.publish(husky_status_msg_);
+  diagnostic_updater_.force_update();
+  husky_status_msg_.header.stamp = ros::Time::now();
+  diagnostic_publisher_.publish(husky_status_msg_);
 }
 
 /**
@@ -224,14 +228,16 @@ void HuskyHardware::updateJointsFromHardware() {
 void HuskyHardware::writeCommandsToHardware() {
 
   // double diff_speed_left = angularToLinear(joints_[LEFT].velocity_command);
-  // double diff_speed_right = angularToLinear(joints_[RIGHT].velocity_command);
+  // double diff_speed_right =
+  // angularToLinear(joints_[RIGHT].velocity_command);
 
   // limitDifferentialSpeed(diff_speed_left, diff_speed_right);
 
-  // horizon_legacy::controlSpeed(diff_speed_left, diff_speed_right, max_accel_,
+  // horizon_legacy::controlSpeed(diff_speed_left, diff_speed_right,
+  // max_accel_,
   //                              max_accel_);
 
-  // TODO: Stub - read from joints_ and convert from rads/s to throttle
+  // TODO : Stub - read from joints_ and convert from rads /s to throttle
   if (!SetMotor1Wrapper(-0.5))
     ROS_ERROR("Error sending speed command: Motor 1");
   if (!SetMotor2Wrapper(-0.5))
@@ -242,7 +248,7 @@ void HuskyHardware::writeCommandsToHardware() {
  * Update diagnostics with control loop timing information
  */
 void HuskyHardware::reportLoopDuration(const ros::Duration &duration) {
-  //  software_status_task_.updateControlFrequency(1 / duration.toSec());
+  software_status_task_.updateControlFrequency(1 / duration.toSec());
 }
 
 /**
