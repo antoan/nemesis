@@ -6,6 +6,14 @@ uint32 uptime
 # ROS Control loop frequency (PC-side)
 float64 ros_control_loop_freq
 
+# Control Velocities
+float64 angular_vel_request_left
+float64 angular_vel_request_right
+float64 throttle_left
+float64 throttle_right
+float64 throttle_limited_left
+float64 throttle_limited_right
+
 # Current draw of platform components, in amps
 #float64 mcu_and_user_port_current
 #float64 left_driver_current

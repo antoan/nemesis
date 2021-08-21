@@ -245,6 +245,19 @@ void HuskySoftwareDiagnosticTask::updateControlFrequency(double frequency) {
   control_freq_ = std::min(control_freq_, frequency);
 }
 
+void HuskySoftwareDiagnosticTask::reportControlVelocities(
+    double angular_vel_request_left, double angular_vel_request_right,
+    double throttle_left, double throttle_right, double throttle_limited_left,
+    double throttle_limited_right) {
+
+  angular_vel_request_left_ = angular_vel_request_left;
+  angular_vel_request_right_ = angular_vel_request_right;
+  throttle_left_ = throttle_left;
+  throttle_right_ = throttle_right;
+  throttle_limited_left_ = throttle_limited_left;
+  throttle_limited_right_ = throttle_limited_right;
+}
+
 void HuskySoftwareDiagnosticTask::run(
     diagnostic_updater::DiagnosticStatusWrapper &stat) {
   msg_.ros_control_loop_freq = control_freq_;
@@ -258,6 +271,13 @@ void HuskySoftwareDiagnosticTask::run(
     message << "Control loop executing " << 100 - static_cast<int>(margin)
             << "% slower than desired";
     stat.mergeSummary(diagnostic_msgs::DiagnosticStatus::WARN, message.str());
+
+    msg_.angular_vel_request_left = angular_vel_request_left_;
+    msg_.angular_vel_request_right = angular_vel_request_right_;
+    msg_.throttle_left = throttle_left_;
+    msg_.throttle_right = throttle_right_;
+    msg_.throttle_limited_left = throttle_limited_left_;
+    msg_.throttle_limited_right = throttle_limited_right_;
   }
 
   reset();

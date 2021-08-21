@@ -230,6 +230,7 @@ void HuskyHardware::updateJointsFromHardware() {
  */
 void HuskyHardware::writeCommandsToHardware() {
 
+  // angularToLinear(joints_[RIGHT].velocity_command);
   // double diff_speed_left = angularToLinear(joints_[LEFT].velocity_command);
   // double diff_speed_right =
   // angularToLinear(joints_[RIGHT].velocity_command);
@@ -239,11 +240,26 @@ void HuskyHardware::writeCommandsToHardware() {
   // horizon_legacy::controlSpeed(diff_speed_left, diff_speed_right,
   // max_accel_,
   //                              max_accel_);
+  //
+  double angular_vel_request_left = joints_[LEFT].velocity_command;
+  double angular_vel_request_right = joints_[RIGHT].velocity_command;
+
+  double throttle_left = angularToThrottle(angular_vel_request_left);
+  double throttle_right = angularToThrottle(angular_vel_request_right);
+
+  double throttle_limited_left = throttle_left;
+  double throttle_limited_right = throttle_right;
+
+  // TODO: limitDifferentialSpeed(throttle_limited_left,
+  // throttle_limited_right);
+  software_status_task_.reportControlVelocities(
+      angular_vel_request_left, angular_vel_request_right, throttle_left,
+      throttle_right, throttle_limited_left, throttle_limited_right);
 
   // TODO : Stub - read from joints_ and convert from rads /s to throttle
-  if (!SetMotor1Wrapper(-0.5))
+  if (!SetMotor1Wrapper(0.22))
     ROS_ERROR("Error sending speed command: Motor 1");
-  if (!SetMotor2Wrapper(-0.5))
+  if (!SetMotor2Wrapper(0.22))
     ROS_ERROR("Error sending speed command: Motor 2");
 }
 
@@ -272,16 +288,22 @@ void HuskyHardware::limitDifferentialSpeed(double &diff_speed_left,
 /**
  * Husky reports travel in metres, need radians for ros_control RobotHW
  */
-double HuskyHardware::linearToAngular(const double &travel) const {
-  return travel / wheel_diameter_ * 2;
-}
+// double HuskyHardware::linearToAngular(const double &travel) const {
+//   return travel / wheel_diameter_ * 2;
+// }
 
 /**
  * RobotHW provides velocity command in rad/s, Husky needs m/s,
  */
-double HuskyHardware::angularToLinear(const double &angle) const {
-  // TODO: Map rads/s to Thunderborg throttle level here
-  return angle;
+// double HuskyHardware::angularToLinear(const double &angle) const {
+//   // TODO: Map rads/s to Thunderborg throttle level here
+//   return angle;
+// }
+
+double HuskyHardware::angularToThrottle(double angle) {
+  // computes the throttle as a linear function of the requested anglular
+  // velocity, of the form y = mx + c where: y = throttle,  m = grad_ ,  c = 0
+  return rads_to_throttle_grad_ * angle;
 }
 
 HuskyHardware::~HuskyHardware() {

@@ -74,9 +74,13 @@ private:
 
   void registerControlInterfaces();
 
-  double linearToAngular(const double &travel) const;
+  // double linearToAngular(const double &travel) const;
 
-  double angularToLinear(const double &angle) const;
+  // double angularToLinear(const double &angle) const;
+
+  // computes the throttle as a linear function of the requested anglular
+  // velocity, of the form y = mx + c where: y = throttle m = grad_  c = 0
+  double angularToThrottle(double angle);
 
   void limitDifferentialSpeed(double &travel_speed_left,
                               double &travel_speed_right);
@@ -90,6 +94,7 @@ private:
   // cython-thunderborg driver
   PyObject *pName, *pModule, *pDict;
 
+  double const rads_to_throttle_grad_ = 0.04;
   //
   // Diagnostics
   ros::Publisher diagnostic_publisher_;

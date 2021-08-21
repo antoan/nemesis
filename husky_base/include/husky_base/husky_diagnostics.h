@@ -49,10 +49,23 @@ public:
 
   void updateControlFrequency(double frequency);
 
+  void reportControlVelocities(double angular_vel_request_left,
+                               double angular_vel_request_right,
+                               double throttle_left, double throttle_right,
+                               double throttle_limited_left,
+                               double throttle_limited_right);
+
 private:
   void reset();
 
   double control_freq_, target_control_freq_;
+
+  double angular_vel_request_left_;
+  double angular_vel_request_right_;
+  double throttle_left_, throttle_right_;
+  double throttle_limited_left_;
+  double throttle_limited_right_;
+
   husky_msgs::HuskyStatus &msg_;
 };
 
