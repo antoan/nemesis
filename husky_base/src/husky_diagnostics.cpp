@@ -260,6 +260,7 @@ void HuskySoftwareDiagnosticTask::reportControlVelocities(
 
 void HuskySoftwareDiagnosticTask::run(
     diagnostic_updater::DiagnosticStatusWrapper &stat) {
+
   msg_.ros_control_loop_freq = control_freq_;
   stat.add("ROS Control Loop Frequency", msg_.ros_control_loop_freq);
 
@@ -271,14 +272,14 @@ void HuskySoftwareDiagnosticTask::run(
     message << "Control loop executing " << 100 - static_cast<int>(margin)
             << "% slower than desired";
     stat.mergeSummary(diagnostic_msgs::DiagnosticStatus::WARN, message.str());
-
-    msg_.angular_vel_request_left = angular_vel_request_left_;
-    msg_.angular_vel_request_right = angular_vel_request_right_;
-    msg_.throttle_left = throttle_left_;
-    msg_.throttle_right = throttle_right_;
-    msg_.throttle_limited_left = throttle_limited_left_;
-    msg_.throttle_limited_right = throttle_limited_right_;
   }
+
+  msg_.angular_vel_request_left = angular_vel_request_left_;
+  msg_.angular_vel_request_right = angular_vel_request_right_;
+  msg_.throttle_left = throttle_left_;
+  msg_.throttle_right = throttle_right_;
+  msg_.throttle_limited_left = throttle_limited_left_;
+  msg_.throttle_limited_right = throttle_limited_right_;
 
   reset();
 }

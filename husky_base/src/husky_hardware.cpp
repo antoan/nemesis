@@ -241,25 +241,36 @@ void HuskyHardware::writeCommandsToHardware() {
   // max_accel_,
   //                              max_accel_);
   //
+
   double angular_vel_request_left = joints_[LEFT].velocity_command;
   double angular_vel_request_right = joints_[RIGHT].velocity_command;
+  // ROS_DEBUG_STREAM("angular_vel_request_left:" << angular_vel_request_left
+  //                                              << "
+  //                                              angular_vel_request_right"
+  //                                              << angular_vel_request_right);
 
   double throttle_left = angularToThrottle(angular_vel_request_left);
   double throttle_right = angularToThrottle(angular_vel_request_right);
 
+  // TODO: limitDifferentialSpeed(throttle_limited_left,
+  // throttle_limited_right);
+
   double throttle_limited_left = throttle_left;
   double throttle_limited_right = throttle_right;
 
-  // TODO: limitDifferentialSpeed(throttle_limited_left,
-  // throttle_limited_right);
   software_status_task_.reportControlVelocities(
       angular_vel_request_left, angular_vel_request_right, throttle_left,
       throttle_right, throttle_limited_left, throttle_limited_right);
 
-  // TODO : Stub - read from joints_ and convert from rads /s to throttle
-  if (!SetMotor1Wrapper(0.22))
+  // Keep For Manual Testing ONLY
+  // if (!SetMotor1Wrapper(0.5))
+  //   ROS_ERROR("Error sending speed command: Motor 1");
+  // if (!SetMotor2Wrapper(0.0))
+  //   ROS_ERROR("Error sending speed command: Motor 2");
+
+  if (!SetMotor1Wrapper(throttle_limited_right))
     ROS_ERROR("Error sending speed command: Motor 1");
-  if (!SetMotor2Wrapper(0.22))
+  if (!SetMotor2Wrapper(throttle_limited_left))
     ROS_ERROR("Error sending speed command: Motor 2");
 }
 
