@@ -94,8 +94,10 @@ private:
   // cython-thunderborg driver
   PyObject *pName, *pModule, *pDict;
 
+  // Used to compute the throttle as a linear function of the requested anglular
+  // velocity, of the form y = mx + c where: y = throttle,  m = grad_ ,  c = 0
   double const rads_to_throttle_grad_ = 0.04;
-  //
+
   // Diagnostics
   ros::Publisher diagnostic_publisher_;
   husky_msgs::HuskyStatus husky_status_msg_;
@@ -110,7 +112,7 @@ private:
   //     safety_status_task_;
 
   // ROS Parameters
-  double wheel_diameter_, max_accel_, max_speed_;
+  double wheel_diameter_, min_throttle_, max_throttle_;
 
   double polling_timeout_;
 

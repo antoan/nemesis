@@ -52,8 +52,7 @@ HuskyHardware::HuskyHardware(ros::NodeHandle nh, ros::NodeHandle private_nh,
 {
 
   private_nh_.param<double>("wheel_diameter", wheel_diameter_, 0.3302);
-  private_nh_.param<double>("max_accel", max_accel_, 5.0);
-  private_nh_.param<double>("max_speed", max_speed_, 1.0);
+  private_nh_.param<double>("max_throttle", max_throttle_, 1.0);
   private_nh_.param<double>("polling_timeout_", polling_timeout_, 10.0);
 
   initilizeCythonThunderborg();
@@ -164,7 +163,9 @@ void HuskyHardware::registerControlInterfaces() {
  * External hook to trigger diagnostic update
  */
 void HuskyHardware::updateDiagnostics() {
+
   battery_status_task_.updateBatteryStatus(GetBatteryReadingWrapper());
+
   diagnostic_updater_.force_update();
   husky_status_msg_.header.stamp = ros::Time::now();
   diagnostic_publisher_.publish(husky_status_msg_);
@@ -219,8 +220,8 @@ void HuskyHardware::updateJointsFromHardware() {
 
   // TODO: Stub - convert from throttle level to rads/s, cast to double and
   // write to joints_
-  float power2 = GetMotor2Wrapper();
-  float power1 = GetMotor1Wrapper();
+  // float power2 = GetMotor2Wrapper();
+  // float power1 = GetMotor1Wrapper();
   // ROS_DEBUG_STREAM("Power 1:" << power1 << " Power 2:" << power2);
 }
 
@@ -252,11 +253,10 @@ void HuskyHardware::writeCommandsToHardware() {
   double throttle_left = angularToThrottle(angular_vel_request_left);
   double throttle_right = angularToThrottle(angular_vel_request_right);
 
-  // TODO: limitDifferentialSpeed(throttle_limited_left,
-  // throttle_limited_right);
-
   double throttle_limited_left = throttle_left;
   double throttle_limited_right = throttle_right;
+
+  limitDifferentialSpeed(throttle_limited_left, throttle_limited_right);
 
   software_status_task_.reportControlVelocities(
       angular_vel_request_left, angular_vel_request_right, throttle_left,
@@ -290,9 +290,9 @@ void HuskyHardware::limitDifferentialSpeed(double &diff_speed_left,
   double large_speed =
       std::max(std::abs(diff_speed_left), std::abs(diff_speed_right));
 
-  if (large_speed > max_speed_) {
-    diff_speed_left *= max_speed_ / large_speed;
-    diff_speed_right *= max_speed_ / large_speed;
+  if (large_speed > max_throttle_) {
+    diff_speed_left *= max_throttle_ / large_speed;
+    diff_speed_right *= max_throttle_ / large_speed;
   }
 }
 
