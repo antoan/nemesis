@@ -53,6 +53,7 @@ HuskyHardware::HuskyHardware(ros::NodeHandle nh, ros::NodeHandle private_nh,
 
   private_nh_.param<double>("wheel_diameter", wheel_diameter_, 0.3302);
   private_nh_.param<double>("max_throttle", max_throttle_, 1.0);
+  private_nh_.param<double>("min_throttle", min_throttle_, 0.3);
   private_nh_.param<double>("polling_timeout_", polling_timeout_, 10.0);
 
   initilizeCythonThunderborg();
