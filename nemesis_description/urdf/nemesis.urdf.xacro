@@ -92,6 +92,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   </joint>
 
   <!-- Inertial link stores the robot's inertial information -->
+  
   <link name="inertial_link">
     <inertial>
       <mass value="1.8788" />
@@ -106,6 +107,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
     <child link="inertial_link" />
   </joint>
 
+   
   <!-- Husky wheel macros -->
   <xacro:nemesis_wheel wheel_prefix="front_left">
     <origin xyz="${base_length - x_joint_offset} ${y_joint_offset} ${-z_joint_offset}" rpy="0 0 0" />
@@ -133,14 +135,14 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 
   -->
  
-
+   <!--
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
       <robotNamespace>$(arg robot_namespace)</robotNamespace>
       <legacyModeNS>true</legacyModeNS>
     </plugin>
   </gazebo>
-
+  -->
  
 
 
