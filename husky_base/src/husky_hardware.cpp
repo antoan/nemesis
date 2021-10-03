@@ -45,11 +45,7 @@ HuskyHardware::HuskyHardware(ros::NodeHandle nh, ros::NodeHandle private_nh,
                              double target_control_freq)
     : nh_(nh), private_nh_(private_nh),
       software_status_task_(husky_status_msg_, target_control_freq),
-      battery_status_task_(husky_status_msg_)
-// system_status_task_(husky_status_msg_)
-// power_status_task_(husky_status_msg_),
-// safety_status_task_(husky_status_msg_),
-{
+      battery_status_task_(husky_status_msg_) {
 
   private_nh_.param<double>("wheel_diameter", wheel_diameter_, 0.105);
   private_nh_.param<double>("max_throttle", max_throttle_, 1.0);
@@ -58,31 +54,9 @@ HuskyHardware::HuskyHardware(ros::NodeHandle nh, ros::NodeHandle private_nh,
 
   initilizeCythonThunderborg();
 
-  // std::string port;
-  // private_nh_.param<std::string>("port", port, "/dev/prolific");
-  // horizon_legacy::connect(port);
-  // horizon_legacy::configureLimits(max_speed_, max_accel_);
-  // resetTravelOffset();
   initializeDiagnostics();
   registerControlInterfaces();
 }
-
-/**
- * Get current encoder travel offsets from MCU and bias future encoder
- * readings against them
- */
-// void HuskyHardware::resetTravelOffset() {
-//   horizon_legacy::Channel<clearpath::DataEncoders>::Ptr enc =
-//       horizon_legacy::Channel<clearpath::DataEncoders>::requestData(
-//           polling_timeout_);
-//   if (enc) {
-//     for (int i = 0; i < 4; i++) {
-//       joints_[i].position_offset = linearToAngular(enc->getTravel(i % 2));
-//     }
-//   } else {
-//     ROS_ERROR("Could not get encoder data to calibrate travel offset");
-//   }
-// }
 
 /**
  * Initialize Cython-Thunderborg driver.
@@ -115,25 +89,13 @@ void HuskyHardware::initilizeCythonThunderborg() {
   if (!InitTB())
     ROS_ERROR("Cython-Thunderborg Initialization Failure");
 }
+
 /**
  * Register diagnostic tasks with updater class
  */
 void HuskyHardware::initializeDiagnostics() {
 
-  // horizon_legacy::Channel<clearpath::DataPlatformInfo>::Ptr info =
-  //     horizon_legacy::Channel<clearpath::DataPlatformInfo>::requestData(
-  //         polling_timeout_);
-  //
-  // std::ostringstream hardware_id_stream;
-  // hardware_id_stream << "Husky " << info->getModel() << "-"
-  //                    << info->getSerial();
-
-  // diagnostic_updater_.setHardwareID(hardware_id_stream.str());
-  // diagnostic_updater_.add(system_status_task_);
-  // diagnostic_updater_.add(power_status_task_);
-  // diagnostic_updater_.add(safety_status_task_);
-
-  diagnostic_updater_.setHardwareID("Nemesis_Hardware_ID");
+  diagnostic_updater_.setHardwareID("Monsterborg");
   diagnostic_updater_.add(software_status_task_);
   diagnostic_updater_.add(battery_status_task_);
   diagnostic_publisher_ = nh_.advertise<husky_msgs::HuskyStatus>("status", 10);
@@ -173,51 +135,11 @@ void HuskyHardware::updateDiagnostics() {
 }
 
 /**
- * Pull latest speed and travel measurements from MCU, and store in joint
- * structure for ros_control
+ * Pull latest speed and travel measurements from Thunderborg hardware, and
+ * store in joint structure for ros_control
  */
+/**
 void HuskyHardware::updateJointsFromHardware() {
-
-  // horizon_legacy::Channel<clearpath::DataEncoders>::Ptr enc =
-  //     horizon_legacy::Channel<clearpath::DataEncoders>::requestData(
-  //         polling_timeout_);
-  // if (enc) {
-  //   ROS_DEBUG_STREAM("Received travel information (L:"
-  //                    << enc->getTravel(LEFT) << " R:" <<
-  //                    enc->getTravel(RIGHT)
-  //                    << ")");
-  //   for (int i = 0; i < 4; i++) {
-  //     double delta = linearToAngular(enc->getTravel(i % 2)) -
-  //                    joints_[i].position - joints_[i].position_offset;
-
-  //     // detect suspiciously large readings, possibly from encoder rollover
-  //     if (std::abs(delta) < 1.0) {
-  //       joints_[i].position += delta;
-  //     } else {
-  //       // suspicious! drop this measurement and update the offset for
-  //       // subsequent readings
-  //       joints_[i].position_offset += delta;
-  //       ROS_DEBUG("Dropping overflow measurement from encoder");
-  //     }
-  //   }
-  // }
-
-  // horizon_legacy::Channel<clearpath::DataDifferentialSpeed>::Ptr speed =
-  //     horizon_legacy::Channel<clearpath::DataDifferentialSpeed>::requestData(
-  //         polling_timeout_);
-  // if (speed) {
-  //   ROS_DEBUG_STREAM("Received linear speed information (L:"
-  //                    << speed->getLeftSpeed() << " R:" <<
-  //                    speed->getRightSpeed()
-  //                    << ")");
-  //   for (int i = 0; i < 4; i++) {
-  //     if (i % 2 == LEFT) {
-  //       joints_[i].velocity = linearToAngular(speed->getLeftSpeed());
-  //     } else { // assume RIGHT
-  //       joints_[i].velocity = linearToAngular(speed->getRightSpeed());
-  //     }
-  //   }
-  // }
 
   // TODO: Stub - convert from throttle level to rads/s, cast to double and
   // write to joints_
@@ -225,27 +147,17 @@ void HuskyHardware::updateJointsFromHardware() {
   // float power1 = GetMotor1Wrapper();
   // ROS_DEBUG_STREAM("Power 1:" << power1 << " Power 2:" << power2);
 }
+*/
 
 /**
  * Get latest velocity commands from ros_control via joint structure, and send
- * to MCU
+ * to Tunderborg hardware.
  */
 void HuskyHardware::writeCommandsToHardware() {
 
-  // angularToLinear(joints_[RIGHT].velocity_command);
-  // double diff_speed_left = angularToLinear(joints_[LEFT].velocity_command);
-  // double diff_speed_right =
-  // angularToLinear(joints_[RIGHT].velocity_command);
-
-  // limitDifferentialSpeed(diff_speed_left, diff_speed_right);
-
-  // horizon_legacy::controlSpeed(diff_speed_left, diff_speed_right,
-  // max_accel_,
-  //                              max_accel_);
-  //
-
   double angular_vel_request_left = joints_[LEFT].velocity_command;
   double angular_vel_request_right = joints_[RIGHT].velocity_command;
+
   // ROS_DEBUG_STREAM("angular_vel_request_left:" << angular_vel_request_left
   //                                              << "
   //                                              angular_vel_request_right"

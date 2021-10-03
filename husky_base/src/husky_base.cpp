@@ -54,7 +54,7 @@ void controlLoop(husky_base::HuskyHardware &husky,
 
   // Process control loop
   husky.reportLoopDuration(elapsed);
-  husky.updateJointsFromHardware();
+  // husky.updateJointsFromHardware();
   cm.update(ros::Time::now(), elapsed);
   husky.writeCommandsToHardware();
 }

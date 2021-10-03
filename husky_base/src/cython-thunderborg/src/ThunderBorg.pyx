@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # coding: latin-1
 
-# This module is a cython port of the original ThunderBorg module for the purpose of reducing overhead in the ROS control loop. (Antoan Bekele)
+# This module is a cython port of the original ThunderBorg module for the
+# purpose of reducing performance overhead in the ROS control loop. (Antoan Bekele)
 
 """
 This module is designed to communicate with the ThunderBorg
@@ -82,40 +83,25 @@ COMMAND_VALUE_OFF           = 0     # I2C value representing off
 
 COMMAND_ANALOG_MAX          = 0x3FF # Maximum value for analog readings
 
-#####################################ROS TUNDERBORG INTERFACE #################
+# ======================= ROS-THUNDERBORG INTERFACE ===============================
 
-# Thunderborg Instance
-cdef ThunderBorg borg = ThunderBorg()
-
-# cdef public void TestFunction():
-#      tb = ThunderBorg()
-#      tb.Init()
-#      while True:
-#         tb.SetMotor1(0.5)
-
-
-# cdef public ThunderBorg buildThunderBorg():
-#     return ThunderBorg()
-
-# cdef public InitTB(ThunderBorg borg):
-#      borg.Init()
-
-# cdef public SetMotor1Wrapper(ThunderBorg borg, double power):
-#      borg.SetMotor1(power)
-
-# The cython compiler generates a C++ header file  which exposes the Thunderborg class as a c_Thunderborg_t*, the class methods,
-# however are not directly accessible for reasons which remain unclear. The cython docs do not provide sufficient examples on how to achieve this as of time of writing
-# Please refer to the following discussion:
+# NOTE: The cython compiler generates a C++ header file  which exposes the Thunderborg class as a c_Thunderborg_t*, the class methods,
+# however are not directly accessible for reasons which remain unclear. The cython docs do not provide sufficient examples on how to
+# achieve this as of time of writing. Please refer to the following discussion:
 # https://stackoverflow.com/questions/36455381/embedding-cython-class-methods-in-c?rq=1
+#
 # In summary, global functions get exposed and are accesible from C++, while class methods are problematic for the moment.
 # As a workaround, we make use of the wrapper functions below which call the required methods on the Thunderborg instance.
 
-# NOTE: Ideally we ought to use rospy in cython-thunderborg to propagate messages/exceptions to ROS RobotHW and handle things there accordingly.
+# TODO: Ideally we ought to use rospy in cython-thunderborg to propagate messages/exceptions to ROS RobotHW and handle things there accordingly.
 # eg write to DEBUG/ERROR or terminate execution.
 # We added sucess return values to Motor Setter Methods which we check in RobotHW. Getter Methods raise IOError,
 # while these will not be visible to RobotHW or rqt console, they will be printed to the terminal.
-
+#
 # (Antoan Bekele)
+
+# Thunderborg Instance
+cdef ThunderBorg borg = ThunderBorg()
 
 cdef public bool InitTB():
     return borg.Init()
@@ -135,7 +121,7 @@ cdef public float GetMotor2Wrapper():
 cdef public float GetBatteryReadingWrapper():
      return borg.GetBatteryReading()
 
-############################################################################
+#  ================================================================================
 
 def ScanForThunderBorg(busNumber = 1):
     """
