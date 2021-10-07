@@ -1,5 +1,11 @@
 /**
  *
+ *  \author     Antoan Bekele <antoan.bekele@gmail.com.com>
+ *
+ */
+
+/**
+ *
  *  \author     Paul Bovbel <pbovbel@clearpathrobotics.com>
  *  \copyright  Copyright (c) 2014-2015, Clearpath Robotics, Inc.
  *

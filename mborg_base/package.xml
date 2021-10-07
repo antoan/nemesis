@@ -4,6 +4,8 @@
   <version>0.1.0</version>
   <description>Mborg robot driver</description>
 
+  <author email="antoan.bekele@gmail.com">Antoan Bekele</author>
+  
   <author email="mpurvis@clearpathrobotics.com">Mike Purvis</author>
   <author email="paul@bovbel.com">Paul Bovbel</author>
 
