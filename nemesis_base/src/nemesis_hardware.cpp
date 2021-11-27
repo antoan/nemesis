@@ -48,12 +48,12 @@ namespace nemesis_base {
  * Initialize Nemesis hardware
  */
 NemesisHardware::NemesisHardware(ros::NodeHandle nh, ros::NodeHandle private_nh,
-                             double target_control_freq)
+                                 double target_control_freq)
     : nh_(nh), private_nh_(private_nh),
       software_status_task_(nemesis_status_msg_, target_control_freq),
       battery_status_task_(nemesis_status_msg_) {
 
-  private_nh_.param<double>("wheel_diameter", wheel_diameter_, 0.105);
+  private_nh_.param<double>("wheel_diameter", wheel_diameter_, 0.103);
   private_nh_.param<double>("max_throttle", max_throttle_, 1.0);
   private_nh_.param<double>("min_throttle", min_throttle_, 0.3);
   private_nh_.param<double>("polling_timeout_", polling_timeout_, 10.0);
@@ -104,7 +104,8 @@ void NemesisHardware::initializeDiagnostics() {
   diagnostic_updater_.setHardwareID("Monsterborg");
   diagnostic_updater_.add(software_status_task_);
   diagnostic_updater_.add(battery_status_task_);
-  diagnostic_publisher_ = nh_.advertise<nemesis_msgs::NemesisStatus>("status", 10);
+  diagnostic_publisher_ =
+      nh_.advertise<nemesis_msgs::NemesisStatus>("status", 10);
 }
 
 /**
@@ -205,7 +206,7 @@ void NemesisHardware::reportLoopDuration(const ros::Duration &duration) {
  * trajectory without saturating the outputs
  */
 void NemesisHardware::limitDifferentialSpeed(double &diff_speed_left,
-                                           double &diff_speed_right) {
+                                             double &diff_speed_right) {
   double large_speed =
       std::max(std::abs(diff_speed_left), std::abs(diff_speed_right));
 
