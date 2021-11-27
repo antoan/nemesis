@@ -53,13 +53,13 @@
 namespace nemesis_base {
 
 /**
- * Class representing Nemesis hardware, allows for ros_control to modify internal
- * state via joint interfaces
+ * Class representing Nemesis hardware, allows for ros_control to modify
+ * internal state via joint interfaces
  */
 class NemesisHardware : public hardware_interface::RobotHW {
 public:
   NemesisHardware(ros::NodeHandle nh, ros::NodeHandle private_nh,
-                double target_control_freq);
+                  double target_control_freq);
 
   void updateJointsFromHardware();
 
@@ -86,7 +86,7 @@ private:
   double angularToThrottle(double angle);
 
   // the gradient of the angular velocity/throttle linear model
-  double const rads_to_throttle_grad_ = 0.04;
+  double const rads_to_throttle_grad_ = 0.0368;
 
   void limitDifferentialSpeed(double &travel_speed_left,
                               double &travel_speed_right);
