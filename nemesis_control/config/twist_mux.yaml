@@ -8,7 +8,7 @@ topics:
   timeout : 0.5
   priority: 8
 - name    : external
-  topic   : cmd_vel
+  topic   : /planner/cmd_vel
   timeout : 0.5
   priority: 1
 locks:
