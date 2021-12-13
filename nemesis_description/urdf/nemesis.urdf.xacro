@@ -1,0 +1,238 @@
+<?xml version="1.0"?>
+<!--
+Software License Agreement (BSD)
+
+\file      husky.urdf.xacro
+\authors   Paul Bovbel <pbovbel@clearpathrobotics.com>, Devon Ash <dash@clearpathrobotics.com>
+\copyright Copyright (c) 2015, Clearpath Robotics, Inc., All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that
+the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the
+   following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+   following disclaimer in the documentation and/or other materials provided with the distribution.
+ * Neither the name of Clearpath Robotics nor the names of its contributors may be used to endorse or promote
+   products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WAR-
+RANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, IN-
+DIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<robot name="nemesis" xmlns:xacro="http://ros.org/wiki/xacro">
+
+ <!--
+  <xacro:arg name="realsense_enabled" default="$(optenv NEMESIS_REALSENSE_ENABLED 0)" />
+  <xacro:arg name="realsense_xyz" default="$(optenv NEMESIS_REALSENSE_XYZ 0 0 0)" />
+  <xacro:arg name="realsense_rpy" default="$(optenv NEMESIS_REALSENSE_RPY 0 0 0)" />
+  <xacro:arg name="realsense_mount" default="$(optenv NEMESIS_REALSENSE_MOUNT_FRAME sensor_arch_mount_link)" />
+ 
+  <xacro:arg name="urdf_extras" default="empty.urdf" />
+ -->
+
+  <xacro:arg name="robot_namespace" default="/" />
+
+  <!-- Included URDF/XACRO Files -->
+  <xacro:include filename="$(find nemesis_description)/urdf/wheel.urdf.xacro" />
+
+
+   <xacro:property name="M_PI" value="3.14159"/>
+
+  <material name="blue">
+        <color rgba="0 0 0.8 1"/>
+  </material>
+    
+   <material name="white">
+        <color rgba="1 1 1 1"/>
+   </material>
+
+  <!-- Base Size -->
+  <xacro:property name="base_height" value="0.043" />
+  <xacro:property name="base_width" value="0.143" />
+  <xacro:property name="base_length" value="0.154" />
+
+   <!-- Foundation Size -->
+  <xacro:property name="foundation_height" value="0.045" />
+  <xacro:property name="foundation_width" value="0.134" />
+  <xacro:property name="foundation_length" value="0.154" />
+  
+   <!-- Top Chassis Size -->
+  <xacro:property name="chassis_height" value="0.052" />
+  <xacro:property name="chassis_width" value="0.235" />
+  <xacro:property name="chassis_length" value="0.335" />
+  
+  
+  <!-- Wheel Mounting Positions -->
+  <xacro:property name="x_joint_offset" value="0.0165" />
+  <xacro:property name="y_joint_offset" value="0.0235" />
+  <xacro:property name="z_joint_offset" value="0.021" />
+
+  <!-- Wheel Properties -->
+  <xacro:property name="wheel_length" value="0.05" />
+  <xacro:property name="wheel_radius" value="0.0515" />
+
+  <xacro:property name="t256_to_Base_x" value="-${1/2*(chassis_length - foundation_length) + foundation_length}" />
+  <xacro:property name="t256_to_Base_y" value="${1/2*chassis_length - 1/2*(chassis_length - foundation_length)}" />
+  <xacro:property name="t256_to_Base_z" value="-${chassis_height + 0.002 + foundation_height + 0.002}" />
+
+  <!-- Base link is the center of the robot's bottom plate -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="${base_length*1/2} ${-base_width*1/2} ${-base_height*1/2} " rpy="0 0 0" />
+      <geometry>
+         <box size="${base_length} ${base_width} ${base_height}"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <origin xyz="${base_length*1/2} ${-base_width*1/2} ${-base_height*1/2} " rpy="0 0 0" />
+      <geometry>
+        <box size="${base_length} ${base_width} ${base_height}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0" />
+      <origin xyz="0.0 0.0 0.0" />
+      <inertia ixx="0.16666700" ixy="0.00" ixz="0.00" iyy="0.16666700" iyz="0.00" izz="0.16666700" />
+    </inertial>
+  </link>
+
+   <link name="foundation_link">
+    <visual>
+      <origin xyz="${1/2* foundation_length} ${-1/2* foundation_width}  ${1/2* foundation_height}" rpy="0 0 0" />
+      <geometry>
+         <box size="${foundation_length} ${foundation_width} ${foundation_height}"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+       <origin xyz="${1/2* foundation_length} ${-1/2* foundation_width}  ${1/2* foundation_height}" rpy="0 0 0" />
+      <geometry>
+         <box size="${foundation_length} ${foundation_width} ${foundation_height}"/>
+      </geometry>
+    </collision>
+      <!--  <inertial> -->
+    <!--   <mass value="1.0" /> -->
+    <!--   <origin xyz="0.0 0.0 0.0" /> -->
+    <!--   <inertia ixx="0.16666700" ixy="0.00" ixz="0.00" iyy="0.16666700" iyz="0.00" izz="0.16666700" /> -->
+    <!-- </inertial> -->
+   </link>
+
+    <joint name="foundation_joint" type="fixed">
+    <origin xyz="0 -0.0045 0.002" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="foundation_link" />
+    </joint>
+
+     <link name="chassis_link">
+    <visual>
+      <origin xyz="${1/2* chassis_length} ${-1/2* chassis_width}  ${-1/2* chassis_height}" rpy="0 0 0" />
+      <geometry>
+         <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+       <origin xyz="${1/2* foundation_length} ${-1/2* foundation_width}  ${-1/2* foundation_height}" rpy="0 0 0" />
+      <geometry>
+        <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
+      </geometry>
+    </collision>
+      <!--  <inertial> -->
+    <!--   <mass value="1.0" /> -->
+    <!--   <origin xyz="0.0 0.0 0.0" /> -->
+    <!--   <inertia ixx="0.16666700" ixy="0.00" ixz="0.00" iyy="0.16666700" iyz="0.00" izz="0.16666700" /> -->
+    <!-- </inertial> -->
+   </link>
+
+    <joint name="chassis_joint" type="fixed">
+    <origin xyz="-0.0905 0.0505 0.099" rpy="0 0 0" />
+    <parent link="foundation_link" />
+    <child link="chassis_link" />
+    </joint>
+
+  <!--  <link name="t265_pose_frame"/> -->
+  <!--  <link name="d435i_link"/> -->
+
+  <!--   <joint name="t265_to_base" type="fixed"> -->
+  <!--   <parent link="t265_pose_frame"/> -->
+  <!--   <child link="base_link"/> -->
+  <!--   <origin xyz="${t256_to_Base_x} ${t256_to_Base_y} ${t256_to_Base_z}" rpy="0 0 0"/> -->
+  <!--   </joint> -->
+    
+  <!-- <joint name="t265_to_d435i" type="fixed"> -->
+  <!--   <parent link="t265_pose_frame"/> -->
+  <!--   <child link="d435i_link"/> -->
+  <!--   <origin xyz="0.009 0.021 0.027" rpy="0.000 -0.018 0.005"/> -->
+  <!-- </joint> -->
+  
+  <!-- Base footprint is on the ground under the robot -->
+  <link name="base_footprint"/>
+
+  <joint name="base_footprint_joint" type="fixed">
+    <origin xyz="${1/2*base_length} ${-1/2* base_width} ${ - z_joint_offset  - wheel_radius}" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="base_footprint" />
+  </joint>
+
+  <!-- Inertial link stores the robot's inertial information -->
+  
+  <!-- <link name="inertial_link"> -->
+  <!--   <inertial> -->
+  <!--     <mass value="1.0" /> -->
+  <!--     <origin xyz="0.0 0.0 0.0" /> -->
+  <!--     <inertia ixx="0.16666700" ixy="0.00" ixz="0.00" iyy="0.16666700" iyz="0.00" izz="0.16666700" /> -->
+  <!--   </inertial> -->
+  <!-- </link> -->
+
+  <!-- <joint name="inertial_joint" type="fixed"> -->
+  <!--   <origin xyz="0 0 0" rpy="0 0 0" /> -->
+  <!--   <parent link="base_link" /> -->
+  <!--   <child link="inertial_link" /> -->
+  <!-- </joint> -->
+
+   
+  <!-- Nemesis wheel macros -->
+  <xacro:nemesis_wheel wheel_prefix="front_left">
+    <origin xyz="${base_length - x_joint_offset} ${y_joint_offset} ${-z_joint_offset}" rpy="0 0 0" />
+  </xacro:nemesis_wheel>
+  <xacro:nemesis_wheel wheel_prefix="front_right">
+    <origin xyz="${base_length - x_joint_offset} ${-base_width - y_joint_offset} ${-z_joint_offset}" rpy="0 0 0" />
+  </xacro:nemesis_wheel>
+  <xacro:nemesis_wheel wheel_prefix="rear_left">
+    <origin xyz="${x_joint_offset} ${y_joint_offset} ${-z_joint_offset}" rpy="0 0 0" />
+  </xacro:nemesis_wheel>
+  <xacro:nemesis_wheel wheel_prefix="rear_right">
+    <origin xyz="${x_joint_offset} ${-base_width - y_joint_offset} ${-z_joint_offset}" rpy="0 0 0" />
+  </xacro:nemesis_wheel>
+
+   <!-- add the intel realsense to the sensor arch if needed
+  <xacro:if value="$(arg realsense_enabled)">
+    <link name="realsense_mountpoint"/>
+    <joint name="realsense_mountpoint_joint" type="fixed">
+      <origin xyz="$(arg realsense_xyz)" rpy="$(arg realsense_rpy)" />
+      <parent link="$(arg realsense_mount)"/>
+      <child link="realsense_mountpoint" />
+    </joint>
+    <xacro:intel_realsense_mount prefix="camera" topic="realsense" parent_link="realsense_mountpoint"/>
+  </xacro:if>
+
+  -->
+ 
+   <!--
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>$(arg robot_namespace)</robotNamespace>
+      <legacyModeNS>true</legacyModeNS>
+    </plugin>
+  </gazebo>
+  -->
+ 
+
+
+</robot>
