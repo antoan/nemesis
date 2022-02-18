@@ -1,7 +1,7 @@
 nemesis
 =====
 
-![Monsterborg Base](https://www.flickr.com/photos/193485202@N04/51802147128/in/album-72157719550250323/)
+![Monsterborg Base](https://live.staticflickr.com/65535/51802147128_ae0ffda62b_k.jpg)
 
 This project is an adaptation of the [Husky ROS stack from Clearpath Robotics](http://wiki.ros.org/Robots/Husky), to integrate and control the [PiBorg Monsterborg robot platform](https://www.piborg.org/robots-1/monsterborg) with ROS.
 
