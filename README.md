@@ -10,10 +10,11 @@ It provides a ROS `hardware_interface::RobotHW` implementation using a cythonize
 
 A high level overview of this project can be found in this post https://antoan.github.io/Nemesis/
 
-I use it in conjunction with an additional repository ROS stack which provides prerception, tracking and mapping and experimental `move_base` setup on ROS Melodic - 
-[antoan/nemesis_core](https://github.com/antoan/nemesis_core)
+I use it in conjunction with a related repository ROS stack which provides prerception, tracking & mapping and experimental `move_base` setup on ROS Melodic. [antoan/nemesis_core](https://github.com/antoan/nemesis_core). This is done via the use of additional sensor and compute hardware, thus the resulting system is a custom augmentation which is quite different from of the original Monsterborg mobile base - it would require a replication of the hardware setup in order to make use of it and reproduce it independently. 
 
-- nemesis_base : includes a `hardware_interface::RobotHW` implementation.
+If you have a monsterborg and would like to integrate it with ROS you can try my earlier work [antoan/mborg](https://github.com/antoan/mborg) which specifically for that mobile base.
+
+ - nemesis_base : includes a `hardware_interface::RobotHW` implementation.
  - nemesis_control : Control configuration
  - nemesis_description : Robot description (URDF)
  - nemesis_msgs : Message definitions
