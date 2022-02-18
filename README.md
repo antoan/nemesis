@@ -10,7 +10,10 @@ It provides a ROS hardware_interface::RobotHW implementation using a cythonized 
 
 A high level overview of this project can be found in this post https://antoan.github.io/Nemesis/
 
- - nemesis_base : includes a hardware_interface::RobotHW implementation.
+I use it in conjunction with an additional repository ROS stack which provides prerception, tracking and mapping and experimental move_base support on ROS Melodic - 
+[antoan/nemesis_core](https://github.com/antoan/nemesis_core)
+
+- nemesis_base : includes a hardware_interface::RobotHW implementation.
  - nemesis_control : Control configuration
  - nemesis_description : Robot description (URDF)
  - nemesis_msgs : Message definitions
