@@ -11,6 +11,8 @@ It based on an adaptation of the [Husky ROS stack from Clearpath Robotics](http:
   <img src="/docs/images/DSC_0023.jpg" width="200">
   <img src="/docs/images/DSC_0024.jpg" width="200">
   <img src="/docs/images/DSC_0026.jpg" width="200">
+  <img src="/docs/images/IMG_20210909_154740524.jpg" width="200">
+  <img src="/docs/images/IMG_20210814_193007750.jpg" width="200">
 </p>
 
 Forked from: https://github.com/husky/husky/tree/kinetic-devel [commit](https://github.com/husky/husky/commit/2d368cf32530401238cb45f31e54f40080dd6dc1)
