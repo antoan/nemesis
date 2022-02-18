@@ -1,5 +1,4 @@
-nemesis
-=====
+# nemesis
 
 ![Monsterborg Base](https://live.staticflickr.com/65535/51802147128_ae0ffda62b_k.jpg)
 
@@ -7,9 +6,11 @@ This project is an adaptation of the [Husky ROS stack from Clearpath Robotics](h
 
 Forked from: https://github.com/husky/husky/tree/kinetic-devel commit [2d368cf32530401238cb45f31e54f40080dd6dc1](https://github.com/husky/husky/commit/2d368cf32530401238cb45f31e54f40080dd6dc1)
 
-It provides a ROS RobotHW interface implementation using a cythonized version of the original python [ThunderBorg](https://www.piborg.org/motor-control-1135/thunderborg) motor controller driver from PiBorg, for the purpose of reducing performance overhead in the main ROS control loop.
+It provides a ROS hardware_interface::RobotHW implementation using a cythonized version of the original python [ThunderBorg](https://www.piborg.org/motor-control-1135/thunderborg) motor controller driver from PiBorg, for the purpose of reducing performance overhead in the main ROS control loop.
 
- - nemesis_base : ROS hardware_interface implementation.
+A high level overview of this project can be found in this post https://antoan.github.io/Nemesis/
+
+ - nemesis_base : includes a hardware_interface::RobotHW implementation.
  - nemesis_control : Control configuration
  - nemesis_description : Robot description (URDF)
  - nemesis_msgs : Message definitions
