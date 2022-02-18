@@ -17,4 +17,4 @@ I use it in conjunction with an additional repository ROS stack which provides p
  - nemesis_control : Control configuration
  - nemesis_description : Robot description (URDF)
  - nemesis_msgs : Message definitions
- - nemesis_viz : Visualization (rviz) configuration and bringup
+ - nemesis_viz : Visualization (rviz) configuration
