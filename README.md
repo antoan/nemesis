@@ -1,9 +1,11 @@
 nemesis
 =====
 
-Forked from: ### https://github.com/husky/husky/tree/kinetic-devel commit [2d368cf32530401238cb45f31e54f40080dd6dc1](https://github.com/husky/husky/commit/2d368cf32530401238cb45f31e54f40080dd6dc1)
+![Monsterborg Base]({{site.baseurl}}/https://www.flickr.com/photos/193485202@N04/51802147128/in/album-72157719550250323/)
 
 This project is an adaptation of the [Husky ROS stack from Clearpath Robotics](http://wiki.ros.org/Robots/Husky), to integrate and control the [PiBorg Monsterborg robot platform](https://www.piborg.org/robots-1/monsterborg) with ROS.
+
+Forked from: ### https://github.com/husky/husky/tree/kinetic-devel commit [2d368cf32530401238cb45f31e54f40080dd6dc1](https://github.com/husky/husky/commit/2d368cf32530401238cb45f31e54f40080dd6dc1)
 
 It provides a ROS RobotHW interface implementation using a cythonized version of the original python [ThunderBorg](https://www.piborg.org/motor-control-1135/thunderborg) motor controller driver from PiBorg, for the purpose of reducing performance overhead in the main ROS control loop.
 
