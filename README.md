@@ -4,7 +4,7 @@
 
 This repository is part of **Nemesis Robot**.  A high level overview of this project can be found in this post https://antoan.github.io/Nemesis/
 
-It is based on an adaptation of the [Husky ROS stack from Clearpath Robotics](http://wiki.ros.org/Robots/Husky), to integrate and control the [PiBorg Monsterborg robot platform](https://www.piborg.org/robots-1/monsterborg) with ROS Kinetic.
+It is an adaptation of the [Husky ROS stack from Clearpath Robotics](http://wiki.ros.org/Robots/Husky), to integrate and control the [PiBorg Monsterborg robot platform](https://www.piborg.org/robots-1/monsterborg) with ROS, based on ROS Kinetic.
 
 <p align="center">
   <img src="/docs/images/20220204_164520.jpg" width="200">
