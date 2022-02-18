@@ -20,7 +20,7 @@ Forked from: https://github.com/husky/husky/tree/kinetic-devel [commit](https://
 
 It includes a ROS `hardware_interface::RobotHW` implementation, linked with a cythonized version of the original python [ThunderBorg](https://www.piborg.org/motor-control-1135/thunderborg) motor controller driver from PiBorg for the purpose of reducing performance overhead in the main ROS control loop.
 
-I use it in conjunction with a related project repository which provides prerception, tracking & mapping and experimental `move_base` setup on ROS Melodic. [antoan/nemesis_core](https://github.com/antoan/nemesis_core).  
+It is used in conjunction with a related project repository which provides prerception, tracking & mapping and experimental `move_base` setup on ROS Melodic. [antoan/nemesis_core](https://github.com/antoan/nemesis_core).  
 
 - nemesis_base : includes a `hardware_interface::RobotHW` implementation.
 - nemesis_control : Control configuration
