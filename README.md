@@ -2,7 +2,7 @@
 
 ![Mapping Session](/docs/images/nemesis_mapping.gif)
 
-This repository is part of **Nemesis Robot**.  A high level overview of this project can be found in this post https://antoan.github.io/Nemesis/
+This repository contains the ROS hardware interface, control and robot description components of the **Nemesis Robot** project.  A high level overview of the project can be found in this post https://antoan.github.io/Nemesis/
 
 It is an adaptation of the [Husky ROS stack from Clearpath Robotics](http://wiki.ros.org/Robots/Husky), to integrate and control the [PiBorg Monsterborg robot platform](https://www.piborg.org/robots-1/monsterborg) with ROS, based on ROS Kinetic.
 
