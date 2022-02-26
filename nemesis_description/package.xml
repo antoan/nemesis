@@ -4,6 +4,7 @@
   <version>0.1.0</version>
   <description>Nemesis URDF description</description>
 
+  <author email="antoan.bekele@gmail.com">Antoan Bekele</author>
   <author email="rgariepy@clearpathrobotics.com">Ryan Gariepy</author>
   <author email="pmukherj@clearpathrobotics.com">Prasenjit Mukherjee</author>
   <author email="mpurvis@clearpathrobotics.com">Mike Purvis</author>
